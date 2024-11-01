@@ -1,0 +1,179 @@
+{% schema %}
+{
+  "name": "Custom Product Grid",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Select products to display in the grid."
+    },
+    {
+      "type": "product_list",
+      "id": "products",
+      "label": "Products"
+    },
+    {
+      "type": "text",
+      "id": "grid_heading",
+      "label": "Grid Heading",
+      "default": "Featured Products"
+    }
+  ]
+}
+{% endschema %}
+
+<h2 class="product-grid-heading">{{ section.settings.grid_heading }}</h2>
+
+<div class="product-grid">
+  {% for product in section.settings.products %}
+    {% if product %}
+      <div class="product-item">
+        <img src="{{ product.featured_image | img_url: 'medium' }}" alt="{{ product.title }}">
+        <div class="popup-trigger" onclick="openPopup('{{ product.handle }}')">+</div>
+      </div>
+    {% endif %}
+  {% endfor %}
+</div>
+
+<div id="product-popup" class="popup" style="display: none;">
+  <div class="popup-content">
+    <span class="close" onclick="closePopup()">×</span>
+    <img id="popup-image" src="" alt="Product Image" style="width:100%; margin-bottom: 10px;">
+    <h3 id="popup-product-title"></h3>
+    <p id="popup-product-description"></p>
+    <p id="popup-product-price"></p>
+    <div id="popup-variant-selectors">
+      <label>Color:</label>
+      <select id="variant-color">
+        <option>Blue</option>
+        <option>Black</option>
+      </select>
+      <label>Size:</label>
+      <select id="variant-size">
+        <option>Small</option>
+        <option>Medium</option>
+        <option>Large</option>
+      </select>
+    </div>
+    <button id="add-to-cart" onclick="addToCart()">Add to Cart</button>
+  </div>
+</div>
+
+<script>
+  function openPopup(handle) {
+    fetch(`/products/${handle}.js`)
+      .then(response => response.json())
+      .then(product => {
+        document.getElementById('popup-image').src = product.images[0] ? product.images[0] : '';
+        document.getElementById('popup-product-title').innerText = product.title;
+        document.getElementById('popup-product-description').innerText = product.description;
+        document.getElementById('popup-product-price').innerText = `$${(product.price / 100).toFixed(2)}`;
+        document.getElementById('product-popup').style.display = 'flex'; // Use flex to center
+      })
+      .catch(error => console.error('Error:', error));
+  }
+
+  function closePopup() {
+    document.getElementById('product-popup').style.display = 'none';
+  }
+
+  function addToCart() {
+    const color = document.getElementById('variant-color').value;
+    const size = document.getElementById('variant-size').value;
+    alert(`Added to cart: Color - ${color}, Size - ${size}`);
+    closePopup();
+  }
+</script>
+
+<style>
+  .product-grid-heading {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin: 20px 0;
+  }
+
+  .popup {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+  }
+
+  .popup-content {
+    position: relative;
+    width: 300px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
+  }
+
+  .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+  }
+
+  #add-to-cart {
+    width: 100%;
+    padding: 10px;
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+  }
+
+  .product-item {
+    position: relative;
+  }
+
+  .product-item img {
+    width: 100%;
+    display: block;
+  }
+
+  .popup-trigger {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: white;
+    color: black;
+    border: 2px solid black;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  @media (max-width: 767px) {
+    .product-grid-heading {
+      font-size: 20px;
+    }
+
+    .product-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>
+
+
+
+

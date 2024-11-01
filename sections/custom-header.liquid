@@ -1,0 +1,150 @@
+{% schema %}
+{
+  "name": "Custom Header",
+  "settings": [
+    {
+      "type": "text",
+      "id": "brand_name",
+      "label": "Brand Name",
+      "default": "Tisso Vission"
+    },
+    {
+      "type": "image_picker",
+      "id": "brand_logo",
+      "label": "Brand Logo"
+    },
+    {
+      "type": "text",
+      "id": "center_message",
+      "label": "Welcome Message",
+      "default": "Find the ideal gift for your loved one"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Choose gift ->"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link",
+      "default": "/collections/all"
+    },
+    {
+      "type": "color",
+      "id": "header_background_color",
+      "label": "Header Background Color",
+      "default": "#ffffff"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Header",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}
+
+<div class="custom-header" style="background-color: {{ section.settings.header_background_color }};">
+  <div class="header-content">
+    <div class="menu-icon mobile-only" onclick="toggleMenu()">
+      <div class="menu-line"></div>
+      <div class="menu-line"></div>
+      <div class="menu-line"></div>
+    </div>
+
+    <div class="header-left">
+      {% if section.settings.brand_logo %}
+        <img src="{{ section.settings.brand_logo | img_url: '100x' }}" alt="{{ section.settings.brand_name }}" class="brand-logo">
+      {% else %}
+        <span class="brand-name">{{ section.settings.brand_name }}</span>
+      {% endif %}
+    </div>
+
+    <div class="center-message desktop-only">
+      {{ section.settings.center_message }}
+    </div>
+
+    <div class="header-right desktop-only">
+      <a href="{{ section.settings.button_link }}" class="header-button">{{ section.settings.button_text }}</a>
+    </div>
+  </div>
+</div>
+
+<style>
+  .custom-header {
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+  }
+  .header-content {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .header-left {
+    display: flex;
+    align-items: center;
+  }
+  .menu-icon {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    margin-right: auto;
+  }
+  .menu-line {
+    width: 25px;
+    height: 3px;
+    color: #000;
+    margin: 4px 0;
+  }
+  .brand-logo {
+    height: 40px;
+    margin-right: 10px;
+  }
+  .brand-name {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+  }
+  .center-message {
+    font-size: 1rem;
+    color: #000;
+    text-align: center;
+    flex-grow: 1;
+  }
+  .header-button {
+    background-color: #FFD700;
+    color: #000;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 1rem;
+  }
+
+  @media (max-width: 768px) {
+    .desktop-only {
+      display: none;
+    }
+    .menu-icon {
+      display: flex;
+    }
+    .header-left {
+      flex-grow: 1;
+      justify-content: center;
+    }
+  }
+</style>
+
+<script>
+  function toggleMenu() {
+    alert('Menu clicked!');
+  }
+</script>
+
+
+
